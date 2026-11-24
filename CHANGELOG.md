@@ -5,6 +5,8 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e o projeto adota o
 [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [Não lançado]
+
 ## [0.1.0] — 2026-11-24
 
 ### Adicionado
@@ -21,4 +23,5 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e 
 - Hierarquia de exceções tipadas (`BcbException` e derivadas).
 - Catálogo de séries comuns em `SerieSgs` e enums auxiliares.
 
+[Não lançado]: https://github.com/Guiheld/BCB-DADOS-JAVA-SDK/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/Guiheld/BCB-DADOS-JAVA-SDK/releases/tag/v0.1.0
