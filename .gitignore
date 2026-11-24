@@ -1,0 +1,26 @@
+# Compilação / build
+target/
+
+# Maven Wrapper (uso local; o CI usa o mvn nativo do runner)
+mvnw
+mvnw.cmd
+.mvn/
+
+# IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.settings/
+.project
+.classpath
+nbproject/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Logs e temporários
+*.log
+*.tmp
