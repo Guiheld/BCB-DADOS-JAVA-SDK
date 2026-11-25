@@ -5,6 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.ProxySelector;
+import java.net.http.HttpClient;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -12,6 +15,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import solutions.held.bcb.exception.BcbClientException;
+import solutions.held.bcb.exception.BcbException;
 import solutions.held.bcb.exception.BcbLimiteJanelaException;
 import solutions.held.bcb.exception.BcbRateLimitException;
 import solutions.held.bcb.exception.BcbServerException;
@@ -142,5 +146,25 @@ class HttpTransportTest {
         List<CotacaoDolar> cotacoes =
                 this.transporte(1).obterListaOData(this.stub.urlBase() + "/x", CotacaoDolar.class);
         assertEquals(1, cotacoes.size());
+    }
+
+    @Test
+    void obterListaSgs_comHttpClientInjetado_usaEsseCliente() {
+        HttpClient clienteComProxyMorto = HttpClient.newBuilder()
+                .proxy(ProxySelector.of(new InetSocketAddress("127.0.0.1", 1)))
+                .connectTimeout(Duration.ofMillis(500))
+                .build();
+        HttpTransport transporte = new HttpTransport(BcbClientConfig.builder()
+                .urlBaseSgs(this.stub.urlBase())
+                .urlBasePtax(this.stub.urlBase())
+                .urlBaseExpectativas(this.stub.urlBase())
+                .vazaoPorSegundo(0.0)
+                .maxTentativas(1)
+                .backoffInicial(Duration.ofMillis(1))
+                .backoffMaximo(Duration.ofMillis(5))
+                .httpClient(clienteComProxyMorto)
+                .build());
+        this.stub.responder(200, "[]", "application/json");
+        assertThrows(BcbException.class, () -> transporte.obterListaSgs(this.stub.urlBase() + "/x", ValorSerie.class));
     }
 }
