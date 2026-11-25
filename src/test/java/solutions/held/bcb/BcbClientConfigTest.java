@@ -1,6 +1,7 @@
 package solutions.held.bcb;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -19,7 +20,7 @@ class BcbClientConfigTest {
         assertEquals("https://api.bcb.gov.br/dados/serie", config.urlBaseSgs());
         assertEquals(3, config.maxTentativas());
         assertEquals(Period.ofYears(10), config.janelaMaximaSgs());
-        assertEquals("BCB-DADOS-JAVA-SDK/0.1.0", config.userAgent());
+        assertTrue(config.userAgent().startsWith("BCB-DADOS-JAVA-SDK/"));
         assertNotNull(config.objectMapper());
     }
 
@@ -74,5 +75,14 @@ class BcbClientConfigTest {
     @Test
     void httpClient_padrao_eVazio() {
         assertTrue(BcbClientConfig.padrao().httpClient().isEmpty());
+    }
+
+    @Test
+    void userAgentPadrao_derivaVersaoNaoVazia() {
+        String userAgent = BcbClientConfig.padrao().userAgent();
+        assertTrue(userAgent.startsWith("BCB-DADOS-JAVA-SDK/"));
+        String versao = userAgent.substring("BCB-DADOS-JAVA-SDK/".length());
+        assertFalse(versao.isBlank());
+        assertFalse(versao.contains("${"));
     }
 }
