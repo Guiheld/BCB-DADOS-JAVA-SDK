@@ -26,5 +26,22 @@ Em Linux/macOS, troque `;` por `:`.
 | `ExemploSgs.java` | Últimos valores de uma série e janelamento automático de série diária. |
 | `ExemploCambio.java` | Cotação do dólar em um dia e listagem de moedas. |
 | `ExemploFocus.java` | Consulta filtrada e ordenada às expectativas anuais de IPCA. |
+| `ExemploSpringBoot.java` | Uso com o starter Spring Boot: injeção, cache e customizer. **Ilustrativo** (requer uma app Spring Boot). |
 
 > Os exemplos acessam a API pública do Banco Central e, portanto, exigem conexão com a internet.
+
+## Com Spring Boot
+
+`ExemploSpringBoot.java` é **ilustrativo** — pressupõe uma aplicação Spring Boot com o
+`bcb-dados-spring-boot-starter` e não roda pelo modo arquivo-único acima. Com o starter, o `BcbClient`
+é injetado e configurado por `bcb.*` — em `application.properties` ou `application.yml`:
+
+```yaml
+bcb:
+  max-tentativas: 5
+  timeout-resposta: 45s
+  vazao-por-segundo: 2.0
+```
+
+Cache, observabilidade, health check e testes estão documentados no
+[README do starter](../bcb-dados-spring-boot-starter/README.md).

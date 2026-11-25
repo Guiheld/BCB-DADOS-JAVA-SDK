@@ -7,6 +7,19 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e 
 
 ## [Não lançado]
 
+### Adicionado
+
+- Módulo **`bcb-dados-spring-boot-starter`**: auto-configuração Spring Boot que expõe um `BcbClient`
+  pronto para injeção, configurável por `bcb.*` no `application.properties`/`application.yml`, com o
+  ponto de extensão `BcbClientConfigCustomizer` para ajustes programáticos (por exemplo, um
+  `HttpClient` instrumentado). A auto-configuração recua se a aplicação já declarar o próprio bean.
+
+### Alterado
+
+- Projeto reorganizado como **multi-módulo Maven** (reactor) sob o POM pai `bcb-dados-parent`. O
+  artefato `bcb-dados-java-sdk` mantém a mesma coordenada, pacotes e API pública — nada muda para
+  quem já consome o core.
+
 ## [0.2.0] — 2026-11-25
 
 ### Adicionado
