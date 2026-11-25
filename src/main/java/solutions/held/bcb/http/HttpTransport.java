@@ -41,6 +41,12 @@ public final class HttpTransport {
     /**
      * Cria o transporte a partir da configuração informada.
      *
+     * <p>
+     *     Usa o {@link HttpClient} fornecido em {@link BcbClientConfig#httpClient()} quando presente;
+     *     caso contrário, constrói um cliente padrão com o tempo limite de conexão da configuração e
+     *     política de redirecionamento {@code NORMAL}.
+     * </p>
+     *
      * @param config configuração do cliente
      * @since 24/11/2026
      */
@@ -48,10 +54,11 @@ public final class HttpTransport {
         this.config = config;
         this.objectMapper = config.objectMapper();
         this.throttler = new Throttler(config.vazaoPorSegundo());
-        this.httpClient = HttpClient.newBuilder()
-                .connectTimeout(config.timeoutConexao())
-                .followRedirects(HttpClient.Redirect.NORMAL)
-                .build();
+        this.httpClient = config.httpClient()
+                .orElseGet(() -> HttpClient.newBuilder()
+                        .connectTimeout(config.timeoutConexao())
+                        .followRedirects(HttpClient.Redirect.NORMAL)
+                        .build());
     }
 
     /**

@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.net.http.HttpClient;
 import java.time.Duration;
 import java.time.Period;
+import java.util.Optional;
 
 /**
  * Configuração imutável do cliente da SDK de dados econômicos do Banco Central.
@@ -53,6 +55,7 @@ public final class BcbClientConfig {
     private final Integer tamanhoPaginaFocus;
     private final String userAgent;
     private final ObjectMapper objectMapper;
+    private final HttpClient httpClient;
 
     private BcbClientConfig(Builder builder) {
         this.urlBaseSgs = builder.urlBaseSgs;
@@ -69,6 +72,7 @@ public final class BcbClientConfig {
         this.tamanhoPaginaFocus = builder.tamanhoPaginaFocus;
         this.userAgent = builder.userAgent;
         this.objectMapper = builder.objectMapper == null ? mapperPadrao() : builder.objectMapper;
+        this.httpClient = builder.httpClient;
     }
 
     /**
@@ -248,6 +252,23 @@ public final class BcbClientConfig {
     }
 
     /**
+     * Devolve o {@link HttpClient} personalizado a ser usado pelo transporte, quando informado.
+     *
+     * <p>
+     *     Quando presente, o transporte usa este cliente como está — nesse caso o
+     *     {@link #timeoutConexao()} e a política de redirecionamento passam a ser os do cliente
+     *     fornecido, não os da configuração. O {@link #timeoutResposta()} continua aplicado por
+     *     requisição. Quando ausente, o transporte constrói um cliente padrão.
+     * </p>
+     *
+     * @return o {@link HttpClient} personalizado, ou vazio para usar o padrão
+     * @since 24/11/2026
+     */
+    public Optional<HttpClient> httpClient() {
+        return Optional.ofNullable(this.httpClient);
+    }
+
+    /**
      * Construtor fluente de {@link BcbClientConfig}.
      *
      * @author Guilherme A. Held
@@ -269,6 +290,7 @@ public final class BcbClientConfig {
         private Integer tamanhoPaginaFocus = 1000;
         private String userAgent = USER_AGENT_PADRAO;
         private ObjectMapper objectMapper;
+        private HttpClient httpClient;
 
         private Builder() {}
 
@@ -437,6 +459,26 @@ public final class BcbClientConfig {
          */
         public Builder objectMapper(ObjectMapper objectMapper) {
             this.objectMapper = objectMapper;
+            return this;
+        }
+
+        /**
+         * Define um {@link HttpClient} próprio a ser usado pelo transporte (por exemplo, com proxy,
+         * autenticação, executor ou configuração corporativa). Quando ausente, a SDK constrói um
+         * cliente padrão a partir do {@link #timeoutConexao(Duration)}.
+         *
+         * <p>
+         *     Ao fornecer um cliente, o tempo limite de conexão e a política de redirecionamento
+         *     passam a ser os definidos nesse cliente; o tempo limite de resposta continua aplicado
+         *     por requisição pela SDK.
+         * </p>
+         *
+         * @param httpClient cliente HTTP a ser usado
+         * @return este construtor
+         * @since 24/11/2026
+         */
+        public Builder httpClient(HttpClient httpClient) {
+            this.httpClient = httpClient;
             return this;
         }
 

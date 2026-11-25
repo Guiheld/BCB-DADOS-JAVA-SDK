@@ -2,8 +2,11 @@ package solutions.held.bcb;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.net.http.HttpClient;
 import java.time.Duration;
 import java.time.Period;
 import org.junit.jupiter.api.Test;
@@ -58,5 +61,18 @@ class BcbClientConfigTest {
         assertEquals(5, config.maxTentativas());
         assertEquals(Duration.ofSeconds(45), config.timeoutResposta());
         assertEquals(Period.ofYears(9), config.janelaMaximaSgs());
+    }
+
+    @Test
+    void httpClient_quandoInformado_eDevolvido() {
+        HttpClient cliente = HttpClient.newHttpClient();
+        BcbClientConfig config = BcbClientConfig.builder().httpClient(cliente).build();
+        assertTrue(config.httpClient().isPresent());
+        assertSame(cliente, config.httpClient().get());
+    }
+
+    @Test
+    void httpClient_padrao_eVazio() {
+        assertTrue(BcbClientConfig.padrao().httpClient().isEmpty());
     }
 }
