@@ -167,4 +167,21 @@ class HttpTransportTest {
         this.stub.responder(200, "[]", "application/json");
         assertThrows(BcbException.class, () -> transporte.obterListaSgs(this.stub.urlBase() + "/x", ValorSerie.class));
     }
+
+    @Test
+    void obterListaSgs_listaRetornada_eImutavel() {
+        this.stub.responder(200, "[{\"data\":\"18/11/2026\",\"valor\":\"5.81\"}]", "application/json");
+        List<ValorSerie> valores = this.transporte(1).obterListaSgs(this.stub.urlBase() + "/x", ValorSerie.class);
+        assertThrows(UnsupportedOperationException.class, valores::clear);
+    }
+
+    @Test
+    void obterListaOData_listaRetornada_eImutavel() {
+        String corpo =
+                "{\"value\":[{\"cotacaoCompra\":5.0,\"cotacaoVenda\":5.1,\"dataHoraCotacao\":\"2026-11-19 13:00:00\"}]}";
+        this.stub.responder(200, corpo, "application/json");
+        List<CotacaoDolar> cotacoes =
+                this.transporte(1).obterListaOData(this.stub.urlBase() + "/x", CotacaoDolar.class);
+        assertThrows(UnsupportedOperationException.class, cotacoes::clear);
+    }
 }

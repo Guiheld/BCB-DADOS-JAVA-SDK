@@ -67,7 +67,7 @@ public final class HttpTransport {
      * @param <T> tipo dos itens esperados
      * @param url URL completa do recurso
      * @param tipoItem classe dos itens a desserializar
-     * @return a lista desserializada, ou lista vazia quando a resposta é vazia
+     * @return a lista imutável desserializada, ou lista vazia quando a resposta é vazia
      * @since 24/11/2026
      */
     public <T> List<T> obterListaSgs(String url, Class<T> tipoItem) {
@@ -75,8 +75,8 @@ public final class HttpTransport {
         if (corpo == null || corpo.isBlank()) return List.of();
 
         try {
-            return this.objectMapper.readValue(
-                    corpo, this.objectMapper.getTypeFactory().constructCollectionType(List.class, tipoItem));
+            return List.copyOf(this.objectMapper.readValue(
+                    corpo, this.objectMapper.getTypeFactory().constructCollectionType(List.class, tipoItem)));
         } catch (java.io.IOException e) {
             throw new BcbSerializationException("Falha ao desserializar a resposta do SGS.", e);
         }
@@ -88,7 +88,7 @@ public final class HttpTransport {
      * @param <T> tipo dos itens esperados
      * @param url URL completa do recurso OData
      * @param tipoItem classe dos itens a desserializar
-     * @return a lista de registros, ou lista vazia quando não há dados
+     * @return a lista imutável de registros, ou lista vazia quando não há dados
      * @since 24/11/2026
      */
     public <T> List<T> obterListaOData(String url, Class<T> tipoItem) {
@@ -98,7 +98,7 @@ public final class HttpTransport {
         try {
             RespostaOData<T> resposta = this.objectMapper.readValue(
                     corpo, this.objectMapper.getTypeFactory().constructParametricType(RespostaOData.class, tipoItem));
-            return resposta.value() == null ? List.of() : resposta.value();
+            return resposta.value() == null ? List.of() : List.copyOf(resposta.value());
         } catch (java.io.IOException e) {
             throw new BcbSerializationException("Falha ao desserializar a resposta OData do Banco Central.", e);
         }
