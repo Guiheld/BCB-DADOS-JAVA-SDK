@@ -7,6 +7,8 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e 
 
 ## [Não lançado]
 
+## [0.2.0] — 2026-11-25
+
 ### Adicionado
 
 - `BcbClientConfig.httpClient(HttpClient)`: permite fornecer um `HttpClient` próprio ao transporte
@@ -34,5 +36,6 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e 
 - Hierarquia de exceções tipadas (`BcbException` e derivadas).
 - Catálogo de séries comuns em `SerieSgs` e enums auxiliares.
 
-[Não lançado]: https://github.com/Guiheld/BCB-DADOS-JAVA-SDK/compare/v0.1.0...HEAD
+[Não lançado]: https://github.com/Guiheld/BCB-DADOS-JAVA-SDK/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/Guiheld/BCB-DADOS-JAVA-SDK/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/Guiheld/BCB-DADOS-JAVA-SDK/releases/tag/v0.1.0

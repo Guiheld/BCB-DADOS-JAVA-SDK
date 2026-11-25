@@ -63,14 +63,14 @@ E as garantias de engenharia:
 <dependency>
     <groupId>solutions.held</groupId>
     <artifactId>bcb-dados-java-sdk</artifactId>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
 </dependency>
 ```
 
 **Gradle (Kotlin DSL)**
 
 ```kotlin
-implementation("solutions.held:bcb-dados-java-sdk:0.1.0")
+implementation("solutions.held:bcb-dados-java-sdk:0.2.0")
 ```
 
 ## Começo rápido
