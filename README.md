@@ -16,6 +16,7 @@ API oficial do Banco Central: <https://dadosabertos.bcb.gov.br/>
 - [Por que esta SDK](#por-que-esta-sdk)
 - [Requisitos](#requisitos)
 - [Instalação](#instalação)
+- [Módulos](#módulos)
 - [Começo rápido](#começo-rápido)
 - [Consultas disponíveis](#consultas-disponíveis)
 - [Janelamento automático do SGS](#janelamento-automático-do-sgs)
@@ -63,15 +64,41 @@ E as garantias de engenharia:
 <dependency>
     <groupId>solutions.held</groupId>
     <artifactId>bcb-dados-java-sdk</artifactId>
-    <version>0.2.0</version>
+    <version>0.3.0</version>
 </dependency>
 ```
 
 **Gradle (Kotlin DSL)**
 
 ```kotlin
-implementation("solutions.held:bcb-dados-java-sdk:0.2.0")
+implementation("solutions.held:bcb-dados-java-sdk:0.3.0")
 ```
+
+### Com Spring Boot
+
+Em projetos Spring Boot, use o _starter_ — ele traz o core transitivamente e **auto-configura** um
+`BcbClient` pronto para injeção, configurável por `bcb.*`:
+
+```xml
+<dependency>
+    <groupId>solutions.held</groupId>
+    <artifactId>bcb-dados-spring-boot-starter</artifactId>
+    <version>0.3.0</version>
+</dependency>
+```
+
+Detalhes de configuração, cache e observabilidade no
+[README do starter](bcb-dados-spring-boot-starter/README.md).
+
+## Módulos
+
+| Artefato | Papel |
+|---|---|
+| `solutions.held:bcb-dados-java-sdk` | Core da SDK, sem dependência de framework. |
+| `solutions.held:bcb-dados-spring-boot-starter` | Auto-configuração Spring Boot; traz o core transitivamente. |
+
+> Há também o `solutions.held:bcb-dados-parent`, publicado apenas como POM agregador de build — **não é
+> uma dependência** (não o declare).
 
 ## Começo rápido
 
