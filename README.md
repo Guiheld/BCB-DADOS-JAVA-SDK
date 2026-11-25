@@ -3,6 +3,7 @@
 [![Java](https://img.shields.io/badge/Java-17%2B-blue)](#requisitos)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
 [![Maven Central](https://img.shields.io/maven-central/v/solutions.held/bcb-dados-java-sdk)](https://central.sonatype.com/artifact/solutions.held/bcb-dados-java-sdk)
+[![CI](https://github.com/Guiheld/BCB-DADOS-JAVA-SDK/actions/workflows/ci.yml/badge.svg?event=pull_request)](https://github.com/Guiheld/BCB-DADOS-JAVA-SDK/actions/workflows/ci.yml?query=event%3Apull_request)
 
 SDK Java para as APIs de **dados econômicos** do Banco Central do Brasil: séries temporais (**SGS**),
 câmbio (**PTAX**) e expectativas de mercado (**Focus**). Imutável, resiliente e com **dependência de
@@ -27,12 +28,28 @@ API oficial do Banco Central: <https://dadosabertos.bcb.gov.br/>
 
 ## Por que esta SDK
 
-- **Sem amarras de dependência**: apenas Jackson em runtime; nada de clientes HTTP externos.
-- **Modelos tipados e imutáveis**: `record`s com `LocalDate`/`LocalDateTime` e `BigDecimal`.
+Consumir as APIs do Banco Central direto parece simples — até você bater nas armadilhas reais: a mesma
+série falha com HTTP 406 se você pedir mais de 10 anos, o PTAX devolve lista vazia (não erro) quando a
+data vai no formato "errado", e cada serviço reporta erro em um formato diferente. Esta SDK esconde
+isso atrás de uma API tipada, imutável e previsível — você escreve menos código e erra menos.
+
+| Dor ao consumir a API direta | O que a SDK faz por você |
+|---|---|
+| Série diária com intervalo > 10 anos → HTTP 406 | **Fatiamento automático** em janelas e concatenação transparente |
+| PTAX exige data em `MM-dd-yyyy` (senão vem vazio em silêncio) | Você passa `LocalDate`; a conversão é interna |
+| Erros em `text/plain`, JSON ou embrulhados em `/* */` | Normalizados em exceções tipadas (`BcbException` e derivadas) |
+| EntitySets do Focus com nomes e capitalização irregulares | Métodos nomeados e mapeamento de campos já prontos |
+| Paginação manual do Focus | `stream()` com paginação automática |
+| `valor` e datas como texto | `BigDecimal`, `LocalDate` e `LocalDateTime` já tipados |
+
+E as garantias de engenharia:
+
+- **Dependência de runtime única**: apenas Jackson; o HTTP é o `HttpClient` do próprio JDK.
+- **Imutável de ponta a ponta**: modelos em `record` e **todas as listas retornadas são imutáveis**.
 - **Resiliência embutida**: novas tentativas com backoff exponencial e _jitter_, respeito a
   `Retry-After` e limitação de vazão client-side.
-- **Particularidades da API já resolvidas**: o limite de 10 anos das séries diárias, o formato de
-  data do PTAX e os formatos de erro heterogêneos ficam escondidos atrás de uma API limpa.
+- **Extensível quando precisa**: forneça seu próprio `HttpClient` (proxy, autenticação, executor,
+  configuração corporativa) via `BcbClientConfig.builder().httpClient(...)`.
 
 ## Requisitos
 

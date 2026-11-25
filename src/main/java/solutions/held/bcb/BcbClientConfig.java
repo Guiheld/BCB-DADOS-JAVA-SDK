@@ -5,10 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.http.HttpClient;
 import java.time.Duration;
 import java.time.Period;
 import java.util.Optional;
+import java.util.Properties;
 
 /**
  * Configuração imutável do cliente da SDK de dados econômicos do Banco Central.
@@ -35,8 +38,12 @@ public final class BcbClientConfig {
     public static final String URL_BASE_EXPECTATIVAS_PADRAO =
             "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata";
 
-    /** Identificação padrão enviada no cabeçalho {@code User-Agent}. */
-    public static final String USER_AGENT_PADRAO = "BCB-DADOS-JAVA-SDK/0.1.0";
+    /**
+     * Identificação padrão enviada no cabeçalho {@code User-Agent}, no formato
+     * {@code BCB-DADOS-JAVA-SDK/<versão>}. A versão é derivada do {@code project.version} do POM
+     * (lida de um recurso de build filtrado pelo Maven); vale {@code dev} quando indisponível.
+     */
+    public static final String USER_AGENT_PADRAO = "BCB-DADOS-JAVA-SDK/" + resolverVersao();
 
     /** Vazão padrão de requisições por segundo aplicada pelo limitador client-side. */
     public static final double VAZAO_PADRAO_POR_SEGUNDO = 3.0;
@@ -109,6 +116,28 @@ public final class BcbClientConfig {
                 .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
                 .enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL)
                 .build();
+    }
+
+    /**
+     * Lê a versão da SDK a partir do recurso de build filtrado pelo Maven.
+     *
+     * @return a versão declarada no {@code project.version} do POM, ou {@code dev} quando indisponível
+     * @since 25/11/2026
+     */
+    private static String resolverVersao() {
+        try (InputStream entrada = BcbClientConfig.class.getResourceAsStream("/bcb-dados-java-sdk.properties")) {
+            if (entrada != null) {
+                Properties propriedades = new Properties();
+                propriedades.load(entrada);
+                String versao = propriedades.getProperty("version");
+                if (versao != null && !versao.isBlank() && !versao.contains("${")) {
+                    return versao.strip();
+                }
+            }
+        } catch (IOException e) {
+            // Recurso ausente ou ilegível: usa o rótulo de desenvolvimento abaixo.
+        }
+        return "dev";
     }
 
     /**

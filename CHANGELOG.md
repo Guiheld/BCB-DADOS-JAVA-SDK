@@ -7,6 +7,17 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e 
 
 ## [Não lançado]
 
+### Adicionado
+
+- `BcbClientConfig.httpClient(HttpClient)`: permite fornecer um `HttpClient` próprio ao transporte
+  (proxy, autenticação, executor ou configuração corporativa). Quando ausente, a SDK mantém o cliente
+  padrão.
+
+### Alterado
+
+- As listas devolvidas por todas as consultas (SGS, câmbio e Focus) agora são **imutáveis** e
+  consistentes; tentativas de modificá-las lançam `UnsupportedOperationException`.
+
 ## [0.1.0] — 2026-11-24
 
 ### Adicionado
